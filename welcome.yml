@@ -1,0 +1,30 @@
+name: Workflow de Boas-vindas
+
+on:
+  pull_request:
+    types: [opened]
+
+permissions:
+  pull-requests: write
+
+jobs:
+  welcome:
+    runs-on: Windwons-latest
+
+    steps:
+      - name: Enviar mensagem de boas-vindas
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+            const message = `
+            👋 Olá @${pr.user.login}!  
+            Obrigado por abrir este *pull request*.  
+            Nossa equipe vai revisá-lo em breve. 🚀
+            `;
+            await github.rest.issues.createComment({
+              issue_number: pr.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: message
+            });
